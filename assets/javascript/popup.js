@@ -1,16 +1,7 @@
-var template = " \
-	<h3>OneTab Settings</h3> \
-	<% \
-	function isChecked(prop){ \
-		return prop == true ? 'checked' : ''; \
-	} \
-	%> \
-	<input name=\"oneTab\" type=\"checkbox\" <%= isChecked(enabled) %>>Enable OneTab <br />";
-
-function start(){
-	getSettings(loadPopup);
-	setEventListeners();
-}
+var template =
+    "<h3>OneTab Settings</h3>\
+	 <% function isChecked(prop){ return prop == true ? 'checked' : ''; } %>\
+	 <input name='oneTab' type='checkbox' <%= isChecked(enabled) %>/>Enable OneTab";
 
 function setEventListeners(){
 	$('body').on('change', '[name=oneTab]', toggleOneTab);
@@ -52,6 +43,11 @@ function getDefault(settings){
 	if (Object.keys(settings).length == 0 || !("enabled" in settings))
 		return {enabled: false};
 	return settings;
+}
+
+function start(){
+    getSettings(loadPopup);
+    setEventListeners();
 }
 
 start();
