@@ -11,11 +11,9 @@
 		"persistent": false,
 		"scripts": ["OneTab.js"]
 	}
-	/*
 	"browser_action": {
 		"default_icon": "icon.png",
 		"default_popup": "OneTab.html"
 	},
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
-	*/
 }
