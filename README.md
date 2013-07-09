@@ -1,7 +1,7 @@
 OneTab
 ======
 
-Chrome extension that fights multi-tab ADD by limiting you to OneTab.
+Chrome extension that fights multi-tab ADD by limiting you to TabZolo.
 
 ## Usage
 
