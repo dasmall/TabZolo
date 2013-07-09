@@ -13,11 +13,11 @@ chrome.tabs.onCreated.addListener(function(newTab) {
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	if('enabled' in changes){
-		enableOneTab(changes['enabled'].newValue);
+		enableTabZolo(changes['enabled'].newValue);
 	}
 });
 
-function enableOneTab(enabled){
+function enableTabZolo(enabled){
 	if(enabled){
 		// store all open all window tabs
 		chrome.windows.getAll({populate: true}, storeWindows);
@@ -33,11 +33,11 @@ function storeWindows(windows){
 			return window;
 	})
 	chrome.storage.local.set({'windows':windows}, function(){
-		enterOneTab(windows);
+		enterTabZolo(windows);
 	});
 }
 
-function enterOneTab(windows){
+function enterTabZolo(windows){
 	var length = windows.length, i, tabs;
 	for (i = 0; i < length; i++){
 		tabs = [];
@@ -69,9 +69,18 @@ function reopenWindows(results){
 			});
 			chrome.windows.create({url: urls});
 		} else {
-			for (var j = 0; j < windows[i].tabs.length; j++){
+			var tabCount = windows[i].tabs.length;
+			for (var j = 0; j < tabCount; j++){
 				var url = windows[i].tabs[j].url;
-				if(j == 0){
+				if(tabCount == 1){
+					chrome.tabs.query({index: 0, windowType: 'normal'}, function(tabs){
+						// if the urls are the same, no need to update
+						// therefore only update if the urls are different.
+						if(tabs[0].url != url)
+							chrome.tabs.update({url: url});
+					});
+
+				} else if(j == 0){
 					//update current tab
 					chrome.tabs.update({url: url});
 				} else {
@@ -101,7 +110,8 @@ function checkTabs(tabs, newTab){
 function setURL(newURL){
 	chrome.windows.getLastFocused({}, function(window){
 		chrome.tabs.query({active: true, windowId: window.id}, function(tabs){
-			// console.log(arguments);
+			if (newURL == "chrome://newtab/")
+				return;
 			chrome.tabs.update(tabs[0].id, {url: newURL});
 		});
 

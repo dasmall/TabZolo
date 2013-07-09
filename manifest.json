@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
-	"name":"TabOne",
-	"description": "OneTab aims to minimize browser tab ADD and allow you to actually accomplish your internet tasks.",
+	"name":"TabZolo",
+	"description": "TabZolo: The focus and get stuff done online extension.",
 	"version": "0.1",
 	"permissions": [
 		"tabs",
@@ -9,12 +9,12 @@
 	],
 	"background": {
 		"persistent": false,
-		"scripts": ["assets/javascript/OneTab.js"]
+		"scripts": ["assets/javascript/TabZolo.js"]
 	},
 	"browser_action": {
 		"default_icon":  "assets/images/icon.png",
-		"default_popup": "OneTab.html",
-		"default_title": "OneTab"
+		"default_popup": "TabZolo.html",
+		"default_title": "TabZolo"
 	},
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

@@ -1,31 +1,26 @@
 var template =
-    "<h3>OneTab Settings</h3>\
-	 <% function isChecked(prop){ return prop == true ? 'checked' : ''; } %>\
-	 <input name='oneTab' type='checkbox' <%= isChecked(enabled) %>/>Enable OneTab";
+	 "<% function isChecked(prop){ return prop == true ? 'checked' : ''; } %>\
+	 <% if (!enabled) { %>\
+		<button name='tabZolo' type='button' data-action='enable'>Enter TabZolo</button>\
+	 <% } else { %>\
+	 	<button name='tabZolo' type='button' data-action='disable'>Exit TabZolo</button>\
+	 <% } %>";
 
 function setEventListeners(){
-	$('body').on('change', '[name=oneTab]', toggleOneTab);
-	// chrome.storage.onChanged.addListener(function(changes, namespace) {
-	//   for (key in changes) {
-	//     var storageChange = changes[key];
-	//     console.log('Storage key "%s" in namespace "%s" changed. ' +
-	//                 'Old value was "%s", new value is "%s".',
-	//                 key,
-	//                 namespace,
-	//                 storageChange.oldValue,
-	//                 storageChange.newValue);
-	//   }
-	// });
+	$('body').on('click', '[name=tabZolo]', function(e){
+		getSettings(loadPopup);
+		toggleTabZolo(e);
+	});
 }
 
-function toggleOneTab(e){
-	if($(this).prop('checked'))
-		enableOneTab(true);
+function toggleTabZolo(e){
+	if($(e.target).data('action') == 'enable')
+		enableTabZolo(true);
 	else
-		enableOneTab(false);
+		enableTabZolo(false);
 }
 
-function enableOneTab(enabled){
+function enableTabZolo(enabled){
 	chrome.storage.local.set({'enabled': enabled});
 }
 
