@@ -1,4 +1,4 @@
-OneTab
+TabZolo
 ======
 
 Chrome extension that fights multi-tab ADD by limiting you to TabZolo.
