@@ -1,9 +1,9 @@
 var template =
 	 "<% function isChecked(prop){ return prop == true ? 'checked' : ''; } %>\
 	 <% if (!enabled) { %>\
-		<button name='tabZolo' type='button' data-action='enable'>Enter TabZolo</button>\
+		<button id='tabZolo' name='tabZolo' type='button' data-action='enable'>Enable TabZolo</button>\
 	 <% } else { %>\
-	 	<button name='tabZolo' type='button' data-action='disable'>Exit TabZolo</button>\
+	 	<button id='tabZolo' name='tabZolo' type='button' data-action='disable'>Disable TabZolo</button>\
 	 <% } %>";
 
 function setEventListeners(){
@@ -14,10 +14,17 @@ function setEventListeners(){
 }
 
 function toggleTabZolo(e){
-	if($(e.target).data('action') == 'enable')
-		enableTabZolo(true);
-	else
-		enableTabZolo(false);
+	if($(e.target).data('action') == 'enable') {
+        enableTabZolo(true);
+        $('#tabZolo').html('Disable TabZolo');
+        window.close();
+    }
+	else {
+        enableTabZolo(false);
+        $('#tabZolo').html('Enable TabZolo');
+        window.close();
+    }
+
 }
 
 function enableTabZolo(enabled){
