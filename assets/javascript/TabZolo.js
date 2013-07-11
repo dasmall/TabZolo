@@ -19,19 +19,18 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
 function enableTabZolo(enabled){
 	if(enabled){
-		// store all open all window tabs
-		chrome.windows.getAll({populate: true}, storeWindows);
+		chrome.windows.getAll({populate: true}, storeWindows);  // store all open all window tabs
 	} else {
-		// restore all open windows / tabs
-		chrome.storage.local.get('windows', reopenWindows);
-	}
+		chrome.storage.local.get('windows', reopenWindows);     // restore all open windows / tabs
+    }
 }
 
 function storeWindows(windows){
 	windows = windows.filter(function(window){
 		if (window.type == 'normal')
 			return window;
-	})
+	});
+
 	chrome.storage.local.set({'windows':windows}, function(){
 		enterTabZolo(windows);
 	});
@@ -43,18 +42,14 @@ function enterTabZolo(windows){
 		tabs = [];
 		windows[i].tabs.map(function(tab){
 			tabs.push(tab.id);
-		})
-		// if it's the last window
-		// only close n-1 tabs
-		// otherwise close 'em all
-		if (i == length - 1){
-			var newTab = tabs.pop();
-		}
+		});
+
+		// if it's the last window only close n-1 tabs otherwise close 'em all
+		if (i == length - 1)
+            tabs.pop();
 
 		chrome.tabs.remove(tabs);
 	}
-
-	// chrome.tabs.update(newTab, {url: "chrome://newtab/", active: true});
 }
 
 function reopenWindows(results){
@@ -81,8 +76,7 @@ function reopenWindows(results){
 
 function checkTabs(tabs, newTab){
 	var newURL = newTab.url;
-	//if an attempt to open a new tab was made
-	// close the new tab
+	// if an attempt to open a new tab was made close the new tab
 	// otherwise change the current url / allow first tab to load.
 	if(tabs.length > 1){
 		// to compensate for funky 
@@ -113,7 +107,6 @@ function setURL(newURL){
 				return;
 			chrome.tabs.update(tabs[0].id, {url: newURL});
 		});
-
 	});
 }
 
