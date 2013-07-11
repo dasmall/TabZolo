@@ -72,21 +72,22 @@ function reopenWindows(results){
 			var tabCount = windows[i].tabs.length;
 			for (var j = 0; j < tabCount; j++){
 				var url = windows[i].tabs[j].url;
-				if(tabCount == 1){
-					chrome.tabs.query({index: 0, windowType: 'normal'}, function(tabs){
-						// if the urls are the same, no need to update
-						// therefore only update if the urls are different.
-						if(tabs[0].url != url)
-							chrome.tabs.update({url: url});
-					});
+				// if(tabCount == 1){
+				// 	chrome.tabs.query({index: 0, windowType: 'normal'}, function(tabs){
+				// 		// if the urls are the same, no need to update
+				// 		// therefore only update if the urls are different.
+				// 		if(tabs[0].url != url)
+				// 			chrome.tabs.update({url: url});
+				// 	});
 
-				} else if(j == 0){
-					//update current tab
-					chrome.tabs.update({url: url});
-				} else {
-					// create new tab
-					chrome.tabs.create({url: url});
-				}
+				// } else if(j == 0){
+				// 	//update current tab
+				// 	chrome.tabs.update({url: url});
+				// } else {
+				// 	// create new tab
+				// 	chrome.tabs.create({url: url});
+				// }
+				chrome.tabs.create({url: url});
 			}
 		}
 	}
