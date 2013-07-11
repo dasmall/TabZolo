@@ -99,9 +99,22 @@ function checkTabs(tabs, newTab){
 	// close the new tab
 	// otherwise change the current url / allow first tab to load.
 	if(tabs.length > 1){
-		chrome.tabs.remove(newTab.id, function(){
-			setURL(newURL);
-		});
+		// to compensate for funky 
+		if (newTab.url == ''){
+			chrome.tabs.query({}, function(allTabs){
+				var ids = [];
+				allTabs.map(function(tab){
+					if(tab.id != newTab.id){
+						ids.push(tab.id);
+					}
+				});
+				chrome.tabs.remove(ids);
+			});
+		} else {
+			chrome.tabs.remove(newTab.id, function(){
+				setURL(newURL);
+			});
+		}
 	} else {
 		setURL(newURL);
 	}
