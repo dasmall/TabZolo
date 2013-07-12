@@ -24,8 +24,9 @@ chrome.tabs.onCreated.addListener(function(newTab) {
 			});
 		}
     });
-  }
-);
+});
+
+chrome.tabs.onUpdated.addListener(updateHandler);
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	if('enabled' in changes)
@@ -101,25 +102,14 @@ function checkTabs(tabs, newTab){
 	var newURL = newTab.url;
 	// if an attempt to open a new tab was made close the new tab
 	// otherwise change the current url / allow first tab to load.
-	if(tabs.length > 1){
-		// to compensate for funky cases where tab urls are blank and get filled in before
-		// the api responds with it
-		// simply closes all but the currently open tab
-		if (newTab.url == ''){
-			chrome.tabs.query({}, function(allTabs){
-				var ids = [];
-				allTabs.map(function(tab){
-					if(tab.id != newTab.id){
-						ids.push(tab.id);
-					}
-				});
-				chrome.tabs.remove(ids);
-			});
-		} else {
+	if(tabs.length > 1) {
+		if (newTab.url != ''){
 			chrome.tabs.remove(newTab.id, function(){
 				setURL(newURL);
 			});
-		}
+		} else {
+            chrome.tabs.onUpdate.addListener(updateHandler);
+        }
 	} else {
 		setURL(newURL);
 	}
@@ -155,4 +145,27 @@ function setIcon(active){
 
 		chrome.browserAction.setTitle({title:'TabZolo (Disabled)'});
 	}
+}
+
+
+function updateHandler(tabId, changeInfo, tab){
+    if (changeInfo.url) {
+        chrome.storage.local.get('enabled', function(settings){
+            if (settings.enabled == true) {
+                chrome.tabs.query({}, function(tabs){
+                    var url = changeInfo.url;
+                    var originalTab = tabs.filter(function(t){
+                        return t.active == false;
+                    });
+
+                    if (originalTab[0].id != tabId){
+                        chrome.tabs.remove(tabId, function(){
+                            chrome.tabs.update(originalTab[0].id, {url: url});
+                        });
+                    }
+                });
+            }
+        });
+    }
+    chrome.tabs.onUpdate.removeListener();
 }
