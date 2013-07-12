@@ -129,6 +129,8 @@ function setIcon(active){
 				'38':'/assets/images/tabzolo-active-38.png'
 			}
 		});
+
+		chrome.browserAction.setTitle({title:'TabZolo (Enabled)'});
 	} else {
 		chrome.browserAction.setIcon({'path':
 			{
@@ -137,6 +139,7 @@ function setIcon(active){
 			}
 		});
 
+		chrome.browserAction.setTitle({title:'TabZolo (Disabled)'});
 	}
 }
 
