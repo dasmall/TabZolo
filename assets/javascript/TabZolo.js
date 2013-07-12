@@ -62,8 +62,9 @@ function enterTabZolo(windows){
             }
 		});
 	}
-    chrome.tabs.remove(tabs);
-    setIcon(true);
+    chrome.tabs.remove(tabs, function(){
+        setIcon(true);
+    });
 }
 
 function reopenWindows(results){
@@ -92,9 +93,9 @@ function reopenWindows(results){
                 }
             }
         }
-        chrome.tabs.update(currentTabId, {active: true});
-
-        setIcon(false);
+        chrome.tabs.update(currentTabId, {active: true}, function(){
+            setIcon(false);
+        });
     });
 }
 
