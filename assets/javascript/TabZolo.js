@@ -1,3 +1,9 @@
+chrome.runtime.onStartup.addListener(function(){
+	chrome.storage.local.get('enabled', function(settings){
+		setIcon(true);
+	});
+})
+
 // listen for new tab created event
 chrome.tabs.onCreated.addListener(function(newTab) {
     chrome.storage.local.get('enabled', function(settings){
@@ -50,6 +56,7 @@ function enterTabZolo(windows){
 
 		chrome.tabs.remove(tabs);
 	}
+	setIcon(true);
 }
 
 function reopenWindows(results){
@@ -71,6 +78,8 @@ function reopenWindows(results){
 			}
 		}
 	}
+
+	setIcon(false);
 	
 }
 
@@ -79,7 +88,9 @@ function checkTabs(tabs, newTab){
 	// if an attempt to open a new tab was made close the new tab
 	// otherwise change the current url / allow first tab to load.
 	if(tabs.length > 1){
-		// to compensate for funky 
+		// to compensate for funky cases where tab urls are blank and get filled in before
+		// the api responds with it
+		// simply closes all but the currently open tab
 		if (newTab.url == ''){
 			chrome.tabs.query({}, function(allTabs){
 				var ids = [];
@@ -108,5 +119,24 @@ function setURL(newURL){
 			chrome.tabs.update(tabs[0].id, {url: newURL});
 		});
 	});
+}
+
+function setIcon(active){
+	if(active == true){
+		chrome.browserAction.setIcon({'path':
+			{
+				'19':'/assets/images/tabzolo-active-19.png',
+				'38':'/assets/images/tabzolo-active-38.png'
+			}
+		});
+	} else {
+		chrome.browserAction.setIcon({'path':
+			{
+				'19':'/assets/images/tabzolo-inactive-19.png',
+				'38':'/assets/images/tabzolo-inactive-38.png'
+			}
+		});
+
+	}
 }
 

@@ -12,7 +12,10 @@
 		"scripts": ["assets/javascript/TabZolo.js"]
 	},
 	"browser_action": {
-		"default_icon":  "assets/images/icon.png",
+		"default_icon":  {
+			"19": "assets/images/tabzolo-inactive-19.png",
+			"38": "assets/images/tabzolo-inactive-38.png"
+		},
 		"default_popup": "TabZolo.html",
 		"default_title": "TabZolo"
 	},
