@@ -1,13 +1,23 @@
+chrome.browserAction.onClicked.addListener(function(tab) {
+    chrome.storage.local.get('enabled', function(results){
+        if(results.enabled == true) {
+            chrome.storage.local.set({'enabled': false}, function(){});
+        } else {
+            chrome.storage.local.set({'enabled': true},function(){});
+        }
+    });
+});
+
 chrome.runtime.onStartup.addListener(function(){
-	chrome.storage.local.get('enabled', function(settings){
+	chrome.storage.local.get('enabled', function(results){
 		setIcon(true);
 	});
-})
+});
 
 // listen for new tab created event
 chrome.tabs.onCreated.addListener(function(newTab) {
     chrome.storage.local.get('enabled', function(settings){
-    	if (settings.enabled == true){
+        if (settings.enabled == true){
 			// check all the open tabs
 			chrome.tabs.query({}, function(tabs){
 			  checkTabs(tabs, newTab);
@@ -18,9 +28,8 @@ chrome.tabs.onCreated.addListener(function(newTab) {
 );
 
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-	if('enabled' in changes){
-		enableTabZolo(changes['enabled'].newValue);
-	}
+	if('enabled' in changes)
+		enableTabZolo(changes.enabled.newValue);
 });
 
 function enableTabZolo(enabled){
@@ -43,44 +52,50 @@ function storeWindows(windows){
 }
 
 function enterTabZolo(windows){
-	var length = windows.length, i, tabs;
-	for (i = 0; i < length; i++){
-		tabs = [];
+	var length = windows.length,
+        tabs = [];
+
+    for (var i = 0; i < length; i++){
 		windows[i].tabs.map(function(tab){
-			tabs.push(tab.id);
+            if(!windows[i].focused || !tab.highlighted){
+                tabs.push(tab.id);
+            }
 		});
-
-		// if it's the last window only close n-1 tabs otherwise close 'em all
-		if (i == length - 1)
-            tabs.pop();
-
-		chrome.tabs.remove(tabs);
 	}
-	setIcon(true);
+    chrome.tabs.remove(tabs);
+    setIcon(true);
 }
 
 function reopenWindows(results){
 	
-	var windows = results.windows, length = windows.length, i, urls;
-	
-	for (i = 0; i < length; i++){
-		if (i > 0){
-			urls = [];
-			windows[i].tabs.map(function(tab){
-				urls.push(tab.url);
-			});
-			chrome.windows.create({url: urls});
-		} else {
-			var tabCount = windows[i].tabs.length;
-			for (var j = 0; j < tabCount; j++){
-				var url = windows[i].tabs[j].url;
-				chrome.tabs.create({url: url});
-			}
-		}
-	}
+	var windows = results.windows,
+        length = windows.length,
+        i, urls;
 
-	setIcon(false);
-	
+    chrome.tabs.query({currentWindow: true, active: true}, function(tab){
+        var currentTabId = tab[0].id;
+        for (i = 0; i < length; i++){
+            urls = [];
+            if (i > 0){
+                windows[i].tabs.map(function(tab){
+                    urls.push(tab.url);
+                });
+                chrome.windows.create({url: urls});
+            } else {
+                var tabCount = windows[i].tabs.length;
+                for (var j = 0; j < tabCount; j++){
+                    var id = windows[i].tabs[j].id;
+                    var url = windows[i].tabs[j].url;
+                    if (id != currentTabId) {
+                        chrome.tabs.create({url: url});
+                    }
+                }
+            }
+        }
+        chrome.tabs.update(currentTabId, {active: true});
+
+        setIcon(false);
+    });
 }
 
 function checkTabs(tabs, newTab){
@@ -142,4 +157,3 @@ function setIcon(active){
 		chrome.browserAction.setTitle({title:'TabZolo (Disabled)'});
 	}
 }
-
