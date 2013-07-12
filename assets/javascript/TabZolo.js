@@ -42,8 +42,7 @@ function enableTabZolo(enabled){
 
 function storeWindows(windows){
 	windows = windows.filter(function(window){
-		if (window.type == 'normal')
-			return window;
+        return window.type == 'normal';
 	});
 
 	chrome.storage.local.set({'windows':windows}, function(){
