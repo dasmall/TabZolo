@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name":"TabZolo",
-	"description": "TabZolo: The focus and get stuff done online extension.",
+	"description": "The focus and actually get stuff done online extension.",
 	"version": "1.0.0",
 	"permissions": [
 		"tabs",
@@ -18,5 +18,11 @@
 		},
 		"default_title": "TabZolo"
 	},
-	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+	"homepage_url": "http://tabzolo.co",
+	"icons":{
+		"16": "assets/images/tabzolo-16.png",
+		"48": "assets/images/tabzolo-48.png",
+		"128": "assets/images/tabzolo-128.png",
+		"148": "assets/images/tabzolo-148.png"
+	}
 }
