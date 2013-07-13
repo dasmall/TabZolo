@@ -157,6 +157,16 @@ aside a.button {
   font-size: 21px;
 }
 
+aside a.button.chrome {
+    height: 34px;
+    padding-left: 60px;
+    background: #2879d0 url(../images/web-store-small.png) -4px -1px no-repeat;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: 1px #2879d0 solid;
+
+}
+
 code, pre {
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   color: #222;
