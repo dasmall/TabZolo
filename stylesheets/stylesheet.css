@@ -109,6 +109,10 @@ header h2 {
   max-width: 100%;
 }
 
+#main-content .button.chrome{
+  margin: 0 auto;
+}
+
 aside#sidebar {
   width: 200px;
   padding-left: 20px;
@@ -148,7 +152,7 @@ header a.button {
   top: 0;
   background: transparent url(../images/github-button.png) 0 0 no-repeat;
 }
-aside a.button {
+aside a.button, .chrome {
   width: 138px;
   padding-left: 64px;
   display: block;
@@ -157,7 +161,7 @@ aside a.button {
   font-size: 21px;
 }
 
-aside a.button.chrome {
+aside a.button.chrome, a.button.chrome {
     height: 34px;
     padding-left: 60px;
     background: #2879d0 url(../images/web-store-small.png) -4px -1px no-repeat;
@@ -366,6 +370,21 @@ footer a:hover {
   color: #444;
 }
 
+iframe{
+  margin: 6px auto;
+  display: block;
+}
+
+iframe.mini{
+  display:none;
+}
+.download{
+  font-size: 18px;
+  font-weight: bold;
+}
+aside .download{
+  text-align: center;
+}
 /* MISC */
 .clearfix:after {
   clear: both;
@@ -487,3 +506,13 @@ footer a:hover {
 
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (max-width: 479px) {}
+
+@media only screen and (max-width: 420px) {
+  iframe.mini{
+    display:block;
+  }
+
+  iframe.full{
+    display: none;
+  }
+}
