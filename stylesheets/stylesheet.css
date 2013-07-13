@@ -486,7 +486,7 @@ aside .download{
     padding: 20px 0;
     min-height: 0;
   }
-  aside#sidebar a.button {
+  aside#sidebar a.button, .download {
     display: none;
   }
   #main-content h1:before,
