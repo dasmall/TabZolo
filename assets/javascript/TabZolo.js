@@ -26,8 +26,6 @@ chrome.tabs.onCreated.addListener(function(newTab) {
     });
 });
 
-chrome.tabs.onUpdated.addListener(updateHandler);
-
 chrome.storage.onChanged.addListener(function(changes, namespace) {
 	if('enabled' in changes)
 		enableTabZolo(changes.enabled.newValue);
@@ -109,7 +107,7 @@ function checkTabs(tabs, newTab){
 				setURL(newURL);
 			});
 		} else {
-            chrome.tabs.onUpdate.addListener(updateHandler);
+            chrome.tabs.onUpdated.addListener(updateHandler);
         }
 	} else {
 		setURL(newURL);
@@ -168,5 +166,5 @@ function updateHandler(tabId, changeInfo, tab){
             }
         });
     }
-    chrome.tabs.onUpdate.removeListener();
+    chrome.tabs.onUpdated.removeListener(updateHandler);
 }
