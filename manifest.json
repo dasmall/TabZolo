@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name":"TabZolo",
 	"description": "The focus and actually get stuff done online extension.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"permissions": [
 		"tabs",
 		"storage"
