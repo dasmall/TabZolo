@@ -10,7 +10,11 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
 chrome.runtime.onStartup.addListener(function(){
 	chrome.storage.local.get('enabled', function(results){
-		setIcon(true);
+		if(results.enabled == true){
+			setIcon(true);
+		} else {
+			setIcon(false);
+		}
 	});
 });
 
