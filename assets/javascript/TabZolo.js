@@ -1,9 +1,9 @@
 chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.storage.local.get('enabled', function(results){
         if(results.enabled == true) {
-            chrome.storage.local.set({'enabled': false}, function(){});
+            chrome.storage.local.set({'enabled': false});
         } else {
-            chrome.storage.local.set({'enabled': true},function(){});
+            chrome.storage.local.set({'enabled': true});
         }
     });
 });
@@ -70,30 +70,48 @@ function enterTabZolo(windows){
 }
 
 function reopenWindows(results){
-	
-	var windows = results.windows,
-        length = windows.length,
-        i, urls;
+  var windows = results.windows,
+    windowCount = windows.length,
+    i, urls;
 
-    chrome.tabs.query({currentWindow: true, active: true}, function(tab){
+  chrome.tabs.query({currentWindow: true, active: true}, function(tab){
         var currentTabId = tab[0].id;
-        for (i = 0; i < length; i++){
-            urls = [];
-            if (i > 0){
-                windows[i].tabs.map(function(tab){
-                    urls.push(tab.url);
-                });
-                chrome.windows.create({url: urls});
-            } else {
-                var tabCount = windows[i].tabs.length;
-                for (var j = 0; j < tabCount; j++){
-                    var id = windows[i].tabs[j].id;
-                    var url = windows[i].tabs[j].url;
-                    if (id != currentTabId) {
-                        chrome.tabs.create({url: url});
+        for (i = 0; i < windowCount; i++){
+            (function (){
+                var currWindow = windows[i];
+                urls = [];
+                if (i > 0){
+                    chrome.windows.create({}, function(window){
+                        var emptyTab = window.tabs[0];
+                        currWindow.tabs.map(function(tab){
+                            chrome.tabs.create({
+                                windowId: window.id,
+                                index: tab.index,
+                                url: tab.url,
+                                active: tab.active,
+                                pinned: tab.pinned
+                            });
+                            // Remove the blank tab created on window
+                            chrome.tabs.remove(emptyTab.id);
+                        });
+                    });
+                } else {
+                    var tabCount = windows[i].tabs.length;
+                    for (var j = 0; j < tabCount; j++){
+                        currWindow = windows[i];
+                        var windowTab = currWindow.tabs[j];
+                        if (windowTab.id != currentTabId) {
+                            chrome.tabs.create({
+                                windowId: currWindow.id,
+                                index: windowTab.index,
+                                url: windowTab.url,
+                                active: windowTab.active,
+                                pinned: windowTab.pinned
+                            });
+                        }
                     }
                 }
-            }
+            })();
         }
         chrome.tabs.update(currentTabId, {active: true}, function(){
             setIcon(false);
