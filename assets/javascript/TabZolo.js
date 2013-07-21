@@ -96,9 +96,8 @@ function reopenWindows(results){
                         });
                     });
                 } else {
-                    var tabCount = windows[i].tabs.length;
+                    var tabCount = currWindow.tabs.length;
                     for (var j = 0; j < tabCount; j++){
-                        currWindow = windows[i];
                         var windowTab = currWindow.tabs[j];
                         if (windowTab.id != currentTabId) {
                             chrome.tabs.create({
