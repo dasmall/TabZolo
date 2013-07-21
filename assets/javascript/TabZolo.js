@@ -83,16 +83,20 @@ function reopenWindows(results){
                 if (i > 0){
                     chrome.windows.create({}, function(window){
                         var emptyTab = window.tabs[0];
-                        currWindow.tabs.map(function(tab){
+                        currWindow.tabs.map(function(tab, idx){
+                            console.log(window.id);
                             chrome.tabs.create({
                                 windowId: window.id,
                                 index: tab.index,
                                 url: tab.url,
                                 active: tab.active,
                                 pinned: tab.pinned
+                            }, function(){
+                                if(idx == 0){
+                                    // Remove the blank tab created on window
+                                    chrome.tabs.remove(emptyTab.id);
+                                }
                             });
-                            // Remove the blank tab created on window
-                            chrome.tabs.remove(emptyTab.id);
                         });
                     });
                 } else {
@@ -101,7 +105,6 @@ function reopenWindows(results){
                         var windowTab = currWindow.tabs[j];
                         if (windowTab.id != currentTabId) {
                             chrome.tabs.create({
-                                windowId: currWindow.id,
                                 index: windowTab.index,
                                 url: windowTab.url,
                                 active: windowTab.active,
