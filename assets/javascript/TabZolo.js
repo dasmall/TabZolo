@@ -84,7 +84,6 @@ function reopenWindows(results){
                     chrome.windows.create({}, function(window){
                         var emptyTab = window.tabs[0];
                         currWindow.tabs.map(function(tab, idx){
-                            console.log(window.id);
                             chrome.tabs.create({
                                 windowId: window.id,
                                 index: tab.index,
