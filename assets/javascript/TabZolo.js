@@ -75,7 +75,7 @@ function reopenWindows(results){
     i, urls;
 
   chrome.tabs.query({currentWindow: true, active: true}, function(tab){
-        var currentTabId = tab[0].id;
+      var activeTab = tab[0];
         for (i = 0; i < windowCount; i++){
             (function (){
                 var currWindow = windows[i];
@@ -102,7 +102,7 @@ function reopenWindows(results){
                     var tabCount = currWindow.tabs.length;
                     for (var j = 0; j < tabCount; j++){
                         var windowTab = currWindow.tabs[j];
-                        if (windowTab.id != currentTabId) {
+                        if (windowTab.id != activeTab.id) {
                             chrome.tabs.create({
                                 index: windowTab.index,
                                 url: windowTab.url,
@@ -114,8 +114,10 @@ function reopenWindows(results){
                 }
             })();
         }
-        chrome.tabs.update(currentTabId, {active: true}, function(){
+
+        chrome.tabs.update(activeTab.id, {active: true}, function(tab){
             setIcon(false);
+            chrome.windows.update(tab.windowId, {focused: true});
         });
     });
 }
