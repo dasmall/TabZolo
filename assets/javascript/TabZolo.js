@@ -95,7 +95,12 @@ function reopenWindows(windowsResults){
                 }
             });
         } else {
-            chrome.windows.create({}, function(createdWindow){
+            chrome.windows.create({
+                top: window.top,
+                left: window.left,
+                height: window.height,
+                width: window.width
+            }, function(createdWindow){
                 var emptyTab = createdWindow.tabs[0];
                 window.tabs.forEach(function(newWindowTab, tIdx){
                     chrome.tabs.create({
