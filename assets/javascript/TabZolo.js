@@ -69,57 +69,56 @@ function enterTabZolo(windows){
     });
 }
 
-function reopenWindows(results){
-  var windows = results.windows,
-    windowCount = windows.length,
-    i, urls;
+function reopenWindows(windowsResults){
+  var windows = windowsResults.windows;
 
-  chrome.tabs.query({currentWindow: true, active: true}, function(tab){
-      var activeTab = tab[0];
-        for (i = 0; i < windowCount; i++){
-            (function (){
-                var currWindow = windows[i];
-                urls = [];
-                if (i > 0){
-                    chrome.windows.create({}, function(window){
-                        var emptyTab = window.tabs[0];
-                        currWindow.tabs.map(function(tab, idx){
-                            chrome.tabs.create({
-                                windowId: window.id,
-                                index: tab.index,
-                                url: tab.url,
-                                active: tab.active,
-                                pinned: tab.pinned
-                            }, function(){
-                                if(idx == 0){
-                                    // Remove the blank tab created on window
-                                    chrome.tabs.remove(emptyTab.id);
-                                }
-                            });
-                        });
-                    });
-                } else {
-                    var tabCount = currWindow.tabs.length;
-                    for (var j = 0; j < tabCount; j++){
-                        var windowTab = currWindow.tabs[j];
-                        if (windowTab.id != activeTab.id) {
-                            chrome.tabs.create({
-                                index: windowTab.index,
-                                url: windowTab.url,
-                                active: windowTab.active,
-                                pinned: windowTab.pinned
-                            });
+  chrome.tabs.query({currentWindow: true, active: true}, function(tabResults){
+    var mainTab = tabResults[0];
+
+    windows.forEach(function(window, wIdx){
+        if(window.id === mainTab.windowId) {
+            window.tabs.forEach(function(mainWindowTab, tIdx){
+                if(mainTab.id != mainWindowTab.id){
+                    chrome.tabs.create({
+                        windowId: window.id,
+                        index: mainWindowTab.index,
+                        url: mainWindowTab.url,
+                        active: false,
+                        pinned: mainWindowTab.pinned
+                    }, function(){
+                        if(wIdx === (windows.length - 1) && tIdx === (window.tabs.length - 1))
+                        {
+                            setIcon(false);
+                            chrome.windows.update(mainTab.windowId, {focused: true});
                         }
-                    }
+                    });
                 }
-            })();
-        }
+            });
+        } else {
+            chrome.windows.create({}, function(createdWindow){
+                var emptyTab = createdWindow.tabs[0];
+                window.tabs.forEach(function(newWindowTab, tIdx){
+                    chrome.tabs.create({
+                        windowId: createdWindow.id,
+                        index: newWindowTab.index,
+                        url: newWindowTab.url,
+                        active: newWindowTab.active,
+                        pinned: newWindowTab.pinned
+                    }, function() {
+                        if(tIdx == 0)
+                            chrome.tabs.remove(emptyTab.id);
 
-        chrome.tabs.update(activeTab.id, {active: true}, function(tab){
-            setIcon(false);
-            chrome.windows.update(tab.windowId, {focused: true});
-        });
+                        if(wIdx === (windows.length - 1) && tIdx === (window.tabs.length - 1))
+                        {
+                            setIcon(false);
+                            chrome.windows.update(mainTab.windowId, {focused: true});
+                        }
+                    });
+                });
+            });
+        }
     });
+  });
 }
 
 function checkTabs(tabs, newTab){
