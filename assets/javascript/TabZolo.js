@@ -74,7 +74,7 @@ function reopenWindows(windowsResults){
 
   chrome.tabs.query({currentWindow: true, active: true}, function(tabResults){
     var mainTab = tabResults[0];
-
+    setIcon(false);
     windows.forEach(function(window, wIdx){
         if(window.id === mainTab.windowId) {
             window.tabs.forEach(function(mainWindowTab, tIdx){
@@ -88,7 +88,6 @@ function reopenWindows(windowsResults){
                     }, function(){
                         if(wIdx === (windows.length - 1) && tIdx === (window.tabs.length - 1))
                         {
-                            setIcon(false);
                             chrome.windows.update(mainTab.windowId, {focused: true});
                         }
                     });
@@ -115,7 +114,6 @@ function reopenWindows(windowsResults){
 
                         if(wIdx === (windows.length - 1) && tIdx === (window.tabs.length - 1))
                         {
-                            setIcon(false);
                             chrome.windows.update(mainTab.windowId, {focused: true});
                         }
                     });
