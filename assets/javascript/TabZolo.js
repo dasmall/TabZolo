@@ -1,4 +1,4 @@
-chrome.browserAction.onClicked.addListener(function(tab) {
+chrome.action.onClicked.addListener(function(tab) {
     chrome.storage.local.get('enabled', function(results){
         if(results.enabled == true) {
             chrome.storage.local.set({'enabled': false});
@@ -8,7 +8,9 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     });
 });
 
-chrome.runtime.onStartup.addListener(function(){
+// Restore the icon on browser start, and after install/update (the MV3 action
+// icon resets to the manifest default when the extension is updated).
+function syncIcon(){
 	chrome.storage.local.get('enabled', function(results){
 		if(results.enabled == true){
 			setIcon(true);
@@ -16,7 +18,10 @@ chrome.runtime.onStartup.addListener(function(){
 			setIcon(false);
 		}
 	});
-});
+}
+
+chrome.runtime.onStartup.addListener(syncIcon);
+chrome.runtime.onInstalled.addListener(syncIcon);
 
 // listen for new tab created event
 chrome.tabs.onCreated.addListener(function(newTab) {
@@ -153,23 +158,23 @@ function setURL(newURL){
 
 function setIcon(active){
 	if(active == true){
-		chrome.browserAction.setIcon({'path':
+		chrome.action.setIcon({'path':
 			{
 				'19':'/assets/images/tabzolo-active-19.png',
 				'38':'/assets/images/tabzolo-active-38.png'
 			}
 		});
 
-		chrome.browserAction.setTitle({title:'TabZolo (Enabled)'});
+		chrome.action.setTitle({title:'TabZolo (Enabled)'});
 	} else {
-		chrome.browserAction.setIcon({'path':
+		chrome.action.setIcon({'path':
 			{
 				'19':'/assets/images/tabzolo-inactive-19.png',
 				'38':'/assets/images/tabzolo-inactive-38.png'
 			}
 		});
 
-		chrome.browserAction.setTitle({title:'TabZolo (Disabled)'});
+		chrome.action.setTitle({title:'TabZolo (Disabled)'});
 	}
 }
 
